@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -8,7 +9,7 @@ const app = express();
 const feedRoutes = require('./routes/feed');
 
 app.use(bodyParser.json());
-
+app.use('/images', express.static(path.join(__dirname, 'images')));
 // CORS enabled
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*'); // allowing specific origins
@@ -18,6 +19,15 @@ app.use((req, res, next) => {
 });
 
 app.use('/feed', feedRoutes);
+
+app.use((error, req, res, next) => {
+    console.log(error);
+
+    const status = error.statusCode;
+    const message = error.message;
+
+    res.status(status).json(message);
+});
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
