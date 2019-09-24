@@ -5,14 +5,25 @@ const { validationResult } = require('express-validator');
 const Post = require('../models/post');
 
 exports.getPosts = (req, res, next) => {
+    const { page: currentPage } = req.query || 1;
+    const perPage = 2;
+    let totalItems = null;
 
     Post.find()
+        .countDocuments()
+        .then(count => {
+            totalItems = count;
+            return Post.find()
+                .skip((currentPage - 1) * perPage)
+                .limit(perPage);
+        })
         .then(posts => {
             res
                 .status(200)
                 .json({
                     message: 'Post fetched',
                     posts,
+                    totalItems
                 });
         })
         .catch(err => {
@@ -41,7 +52,7 @@ exports.getPost = (req, res, next) => {
                 .status(200)
                 .json({
                     message: 'Post fetched',
-                    post,
+                    post
                 });
         })
         .catch(err => {
@@ -152,7 +163,7 @@ exports.updatePost = (req, res, next) => {
                 .status(200)
                 .json({
                     message: 'Post Updated',
-                    post: result,
+                    post: result
                 });
         })
         .catch(err => {
@@ -185,7 +196,7 @@ exports.deletePost = (req, res, next) => {
             res
                 .status(200)
                 .json({
-                    message: 'Post Deleted',
+                    message: 'Post Deleted'
                 });
         }).catch(err => {
             if (!err.statusCode) {

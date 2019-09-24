@@ -9,6 +9,7 @@ const MONGODB_URI = 'mongodb://conaryh:k9X9MpdWnfHYcqMC@cluster0-shard-00-00-nvb
 
 const app = express();
 const feedRoutes = require('./routes/feed');
+const authRoutes = require('./routes/auth');
 
 // const storage = multer.diskStorage({
 //     destination: function(req, file, cb) {
@@ -57,6 +58,7 @@ app.use((req, res, next) => {
 
 
 app.use('/feed', feedRoutes);
+app.use('/auth', authRoutes);
 
 app.use((error, req, res, next) => {
     console.log(error);
