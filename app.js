@@ -2,13 +2,37 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const multer = require('multer');
+const uuidv4 = require('uuid/v4')
+
+// CONSTANTS
 const MONGODB_URI = 'mongodb://conaryh:k9X9MpdWnfHYcqMC@cluster0-shard-00-00-nvbxl.mongodb.net:27017,cluster0-shard-00-01-nvbxl.mongodb.net:27017,cluster0-shard-00-02-nvbxl.mongodb.net:27017/messages?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&w=majority';
 
 const app = express();
+ 
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'images');
+    },
+    filename: function(req, file, cb) {
+        cb(null, uuidv4())
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimeType === 'image/png' || file.mimeType === 'image/jpg' || file.mimeType === 'image/jpeg') {
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+};
 
 const feedRoutes = require('./routes/feed');
 
 app.use(bodyParser.json());
+app.use(
+    multer({ storage, fileFilter: fileFilter }).single('image')
+);
 app.use('/images', express.static(path.join(__dirname, 'images')));
 // CORS enabled
 app.use((req, res, next) => {

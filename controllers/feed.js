@@ -54,17 +54,30 @@ exports.createPost = (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        const error = new Error('Validation Failed, entered date is incorrect');
+        const error = new Error('Validation Failed, entered data is incorrect');
 
         error.statusCode = 422;
 
         throw error;
     }
+
+    console.log('req', req.file);
+    if (!req.file) {
+        const error = new Error('No Image provided.');
+
+        error.statusCode = 422;
+
+        throw error;
+    }
+
+    const imageUrl = req.file.path.replace("\\" ,"/");
+    imageUrl = req.file.path.replace("\\","/");
+    // for mac const imageUrl = req.file.path;
     const { title, content } = req.body;
     const post = new Post({
         title,
         content,
-        imageUrl: 'images/stap.jpg',
+        imageUrl,
         creator: {
             name: 'Conary'
         },
@@ -86,20 +99,3 @@ exports.createPost = (req, res, next) => {
             next(err);
         })
 };
-
-
-/*
-*    const imageUrl = req.file.path.replace("\\" ,"/");
-    imageUrl = req.file.path.replace("\\","/");
-
- * const uuidv4 = require('uuid/v4')
- 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, 'images');
-    },
-    filename: function(req, file, cb) {
-        cb(null, uuidv4())
-    }
-});
- */
