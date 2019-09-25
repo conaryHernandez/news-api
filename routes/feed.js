@@ -8,6 +8,8 @@ const isAuth = require('../middleware/is-auth');
 
 router.get('/posts', isAuth, feedController.getPosts);
 
+router.get('/getStatus', isAuth, feedController.getUserStatus);
+
 router.get('/post/:postId', isAuth, feedController.getPost);
 
 router.put('/post/:postId', isAuth, [
@@ -20,6 +22,8 @@ router.post('/post', isAuth, [
     body('content').trim().isLength({ min: 5 })
 
 ], feedController.createPost);
+
+router.patch('/updateStatus/', isAuth, feedController.updateUserStatus);
 
 router.delete('/post/:postId', isAuth, feedController.deletePost);
 
