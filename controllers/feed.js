@@ -222,29 +222,29 @@ exports.updateUserStatus = (req, res, next) => {
         })
 };
 
-exports.getUserStatus = (req, res, next) => {
+exports.getUserStatus = async(req, res, next) => {
 
-    User.findById(req.userId)
-        .then(user => {
-            if (!user) {
-                const error = new Error('No user found.');
+    try {
+        const user = await User.findById(req.userId);
 
-                error.statusCode = 404;
+        if (!user) {
+            const error = new Error('No user found.');
+    
+            error.statusCode = 404;
+    
+            throw error;
+        }
 
-                throw error;
-            }
+        res.status(200).json({
+            status: user.status,
+        })    
+    } catch(err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
 
-            res.status(200).json({
-                status: user.status,
-            })
-        })
-        .catch(err => {
-            if (!err.statusCode) {
-                err.statusCode = 500;
-            }
-
-            next(err);
-        })
+        next(err);
+    }
 };
 
 exports.deletePost = (req, res, next) => {

@@ -7,6 +7,7 @@ const multer = require('multer');
 require('dotenv').config()
 
 // CONSTANTS
+const MONGODB_URI = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-shard-00-00-nvbxl.mongodb.net:27017,cluster0-shard-00-01-nvbxl.mongodb.net:27017,cluster0-shard-00-02-nvbxl.mongodb.net:27017/${process.env.MONGO_DEFAULT_DATABASE}?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&w=majority`;
 
 const app = express();
 const feedRoutes = require('./routes/feed');
@@ -70,7 +71,7 @@ app.use((error, req, res, next) => {
     res.status(status).json({ message, data: data });
 });
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         const server = app.listen(8080);
         const io = require('./socket').init(server);
