@@ -44,48 +44,50 @@ exports.signup = (req, res, next) => {
         });
 };
 
-exports.login = (req, res, next) => {
+exports.login = async(req, res, next) => {
     const { email, password } = req.body;
     let loggedUser = null;
 
-    User.findOne({ email })
-        .then(user => {
-            if (!user) {
-                const error = new Error('User with this email not found.');
+    try {
+        const user = await User.findOne({ email });
 
-                error.statusCode = 401;
-
-                throw error;
-            }
-
-            loggedUser = user;
-
-            return bcrypt.compare(password, user.password);
+        if (!user) {
+            const error = new Error('User with this email not found.');
+    
+            error.statusCode = 401;
+    
+            throw error;
+        }
+    
+        loggedUser = user;
+    
+        const isEqual = await bcrypt.compare(password, user.password);
+    
+        if (!isEqual) {
+            const error = new Error('Wrong Password or email.');
+    
+            error.statusCode = 401;
+    
+            throw error;
+        }
+    
+        const token = jwt.sign({
+            email: loggedUser.email,
+            userId: loggedUser._id.toString(),
+        }, process.env.SECRET, { expiresIn: '1h' });
+    
+        res.status(200).json({
+            token,
+            userId: loggedUser._id.toString()
         })
-        .then(isEqual => {
-            if (!isEqual) {
-                const error = new Error('Wrong Password or email.');
+    
+    } catch(err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
 
-                error.statusCode = 401;
+        next(err);
+        return err;
+    }
 
-                throw error;
-            }
-
-            const token = jwt.sign({
-                email: loggedUser.email,
-                userId: loggedUser._id.toString(),
-            }, process.env.SECRET, { expiresIn: '1h' });
-
-            res.status(200).json({
-                token,
-                userId: loggedUser._id.toString()
-            })
-        })
-        .catch(err => {
-            if (!err.statusCode) {
-                err.statusCode = 500;
-            }
-
-            next(err);
-        });
 };
