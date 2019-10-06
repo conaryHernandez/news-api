@@ -1,7 +1,7 @@
 const authMiddleware = require('../is-auth');
 const jwt = require('jsonwebtoken');
 
-describe.skip('is auth middleware', () => {
+describe('is auth middleware', () => {
     it('should throw an error if authorization middleware is not present', () => {
         const req = {
             get: function() {

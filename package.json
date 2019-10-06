@@ -17,6 +17,9 @@
     "bugs": {
         "url": "https://github.com/conaryHernandez/nodejs-api-news/issues"
     },
+    "jest": {
+        "testEnvironment": "node"
+    },
     "homepage": "https://github.com/conaryHernandez/nodejs-api-news#readme",
     "dependencies": {
         "bcryptjs": "^2.4.3",

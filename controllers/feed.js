@@ -89,7 +89,7 @@ exports.createPost = (req, res, next) => {
         creator: req.userId,
     });
 
-    post.save()
+    return post.save()
         .then(result => {
             return User.findById(req.userId);
         })
@@ -99,15 +99,14 @@ exports.createPost = (req, res, next) => {
             return user.save();
         })
         .then(result => {
-            io.getIO().emit('post', {
-                action: 'create',
-                post: {...post._doc, creator: { _id: req.userId, name: user.name } }
-            });
+
             res.status(201).json({
                 message: 'Post created successfully',
                 post,
                 creator: { _id: creator._id, name: creator.name }
             });
+
+            return result;
         })
         .catch(err => {
             if (!err.statusCode) {
@@ -115,6 +114,7 @@ exports.createPost = (req, res, next) => {
             }
 
             next(err);
+            return err;
         })
 };
 
