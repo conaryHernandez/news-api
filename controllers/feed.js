@@ -27,6 +27,7 @@ exports.getPosts = async(req, res, next) => {
         }
 
         next(err);
+        return err;
     }
 };
 

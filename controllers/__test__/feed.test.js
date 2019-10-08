@@ -73,4 +73,35 @@ describe('Feed Controller - Get User status', () => {
             done();
         });
     });
+
+    it('should retrive all post from databse, in this case 1', (done) => {
+        const req = {
+            query: {
+                page: 1,
+            },
+            userId: '5c0f66b979af55031b34727a',
+        };
+        const res = {
+            statusCode: 500,
+            message: null,
+            posts: [],
+            totalItems: 0,
+            status: function(code) {
+                this.statusCode = code;
+
+                return this;
+            },
+            json: function(data) {
+                this.message = data.message;
+                this.posts = data.posts;
+                this.totalItems = data.totalItems;
+            }
+        };
+
+        feedController.getPosts(req, res, () => {}).then(() => {
+            expect(res.statusCode).toEqual(200);
+            expect(res.posts).toHaveLength(1);
+            done();
+        });
+    });
 });
