@@ -34,7 +34,9 @@ exports.getPosts = async(req, res, next) => {
 exports.getPost = (req, res, next) => {
     const { postId } = req.params;
 
-    Post.findById(postId)
+    console.log('here');
+
+    return Post.findById(postId)
         .then(post => {
             if (!post) {
                 const error = new Error('No post found.');
@@ -44,7 +46,9 @@ exports.getPost = (req, res, next) => {
                 throw error;
             }
 
-            res
+            console.log('here 2');
+
+            return res
                 .status(200)
                 .json({
                     message: 'Post fetched',
@@ -55,6 +59,8 @@ exports.getPost = (req, res, next) => {
             if (!err.statusCode) {
                 err.statusCode = 500;
             }
+
+            console.log('here error', err);
 
             next(err);
         })
