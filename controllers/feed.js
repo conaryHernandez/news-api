@@ -3,9 +3,10 @@ const path = require('path');
 
 const { validationResult } = require('express-validator');
 const io = require('../socket');
-
 const Post = require('../models/post');
 const User = require('../models/user');
+// const Post = mongoose.model('Post');
+// const User = mongoose.model('User');
 
 exports.getPosts = async(req, res, next) => {
     const { page: currentPage } = req.query || 1;

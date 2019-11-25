@@ -1,5 +1,5 @@
-const User = require('../../models/user');
-const Post = require('../../models/post');
+const User = require('../../models/User');
+const Post = require('../../models/Post');
 const feedController = require('../feed');
 const mongoose = require('mongoose');
 

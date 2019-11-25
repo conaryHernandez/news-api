@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+// const User = mongoose.model('User');
 
 exports.signup = (req, res, next) => {
     const errors = validationResult(req);
